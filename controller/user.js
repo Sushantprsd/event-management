@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fileHelper = require("../util/file");
 const Event = require("../model/Events");
 const Enrolled = require("../model/Enrolled");
 
@@ -11,7 +12,15 @@ exports.postNewEvent = (req, res, next) => {
     const landmark = req.body.landmark;
     const coordinates = req.body.coordinates;
     const description = req.body.description;
-
+    let imageUrl = null;
+    try {
+        imageUrl = req.file.path;
+    } catch (err) {
+        if (imageUrl) {
+            fileHelper.deleteFile(imageUrl);
+        }
+        next(err)
+    }
     const newEvent = new Event({
         public: {
             name: name,
@@ -28,6 +37,7 @@ exports.postNewEvent = (req, res, next) => {
             },
             description: description,
             organizerName: req.user.public.name,
+            imageUrl: imageUrl,
         },
         userId: req.userId,
     });
@@ -39,6 +49,9 @@ exports.postNewEvent = (req, res, next) => {
             });
         })
         .catch((err) => {
+            if(imageUrl){
+                fileHelper.deleteFile(imageUrl);
+            }
             if (!err.statusCode) {
                 err.statusCode = 500;
                 next(err);
@@ -173,7 +186,7 @@ exports.postEnrollToEvent = (req, res, next) => {
                     message: "Already Enrolled",
                     data: enrolledEvent,
                 });
-            }else{
+            } else {
                 return res.status(201).json({
                     message: "Enrolled In The Event",
                     data: enrolledEvent,

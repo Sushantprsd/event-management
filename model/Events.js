@@ -44,6 +44,10 @@ const EventSchema = new Schema(
                 required: true,
                 index:true
             },
+            imageUrl:{
+                type:String,
+                required:true
+            }
         },
         status: {
             type: String,
