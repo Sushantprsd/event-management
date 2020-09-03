@@ -18,6 +18,11 @@ mongoose
             res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
             next();
         });
+        app.get("/",(req,res,next)=>{
+            res.status(200).json({
+                message:"working"
+            })
+        })
         app.use('/auth',authRouter);
         app.use('/user',userRouter);
         app.use('/event',eventRouter);
