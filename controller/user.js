@@ -9,8 +9,6 @@ exports.postNewEvent = (req, res, next) => {
     const date = req.body.date;
     const state = req.body.state;
     const city = req.body.city;
-    const landmark = req.body.landmark;
-    const coordinates = req.body.coordinates;
     const description = req.body.description;
     let imageUrl = null;
     try {
@@ -34,10 +32,10 @@ exports.postNewEvent = (req, res, next) => {
             location: {
                 state: state,
                 city: city,
-                landmark: landmark,
+                landmark: "ground",
                 coordinates: {
                     type: "Point",
-                    coordinates: coordinates,
+                    coordinates: [0,0],
                 },
             },
             description: description,
