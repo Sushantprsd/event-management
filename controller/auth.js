@@ -75,7 +75,7 @@ exports.postLogin = (req, res, next) => {
             res.status(200).json({
                 message: "User Found",
                 token: token,
-                user
+                name:loadedUser.public.name
             });
         })
         .catch((err) => {
