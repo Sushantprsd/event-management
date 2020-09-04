@@ -34,6 +34,7 @@ exports.postSignup = (req, res, next) => {
             );
             res.status(201).json({
                 message: "User Created",
+                name:user.public.name,
                 token: token,
             });
         })
