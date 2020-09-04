@@ -6,7 +6,7 @@ const Enrolled = require("../model/Enrolled");
 exports.postNewEvent = (req, res, next) => {
     const name = req.body.name;
     const time = req.body.time;
-    const date = req.body.date + "T" + time + ":00.000Z";
+    const date = req.body.date;
     const state = req.body.state;
     const city = req.body.city;
     const landmark = req.body.landmark;
