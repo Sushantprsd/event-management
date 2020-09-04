@@ -21,6 +21,7 @@ exports.postNewEvent = (req, res, next) => {
         }
         next(err)
     }
+    let path = imageUrl.split("/").pop();
     const newEvent = new Event({
         public: {
             name: name,
@@ -37,7 +38,7 @@ exports.postNewEvent = (req, res, next) => {
             },
             description: description,
             organizerName: req.user.public.name,
-            imageUrl: imageUrl,
+            imageUrl: path,
         },
         userId: req.userId,
     });
