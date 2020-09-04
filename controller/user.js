@@ -22,8 +22,8 @@ exports.postNewEvent = (req, res, next) => {
         next(err)
     }
     let path = imageUrl.split("/").pop();
-    console.log(typeof(path))
-    path = path.replace(/\s/g, "")
+    // console.log(typeof(path))
+    // path = path.replace(/\s/g, "%")
 
     console.log(path);
     const newEvent = new Event({
