@@ -18,7 +18,7 @@ exports.getFetchAllEvent = (req, res, next) => {
                 "public.date": 1,
                 "public.time": 1,
                 "public.location.state": 1,
-                "public.organizer.name": 1,
+                "public.organizerName": 1,
                 "public.imageUrl":1,
                 "public.description":1,
                 created_at: 1,
