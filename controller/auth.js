@@ -50,7 +50,7 @@ exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     let loadedUser = null;
-    User.findOne({ email: email },{_id:1,password:1})
+    User.findOne({ email: email },{_id:1,password:1,"public.name":1})
         .then((user) => {
             if (!user) {
                 const error = new Error("User Doesn't Exist");
