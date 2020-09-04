@@ -12,18 +12,7 @@ exports.getFetchAllEvent = (req, res, next) => {
         },
         { $skip: (currentPage - 1) * perPage },
         { $limit: perPage },
-        {
-            $project: {
-                "public.name": 1,
-                "public.date": 1,
-                "public.time": 1,
-                "public.location.state": 1,
-                "public.organizerName": 1,
-                "public.imageUrl":1,
-                "public.description":1,
-                created_at: 1,
-            },
-        },
+     
     ])
         .then((data) => {
             res.json({
