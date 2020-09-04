@@ -4,6 +4,7 @@ const Event = require("../model/Events");
 const Enrolled = require("../model/Enrolled");
 
 exports.postNewEvent = (req, res, next) => {
+    console.log(req.file)
     const name = req.body.name;
     const time = req.body.time;
     const date = req.body.date;
@@ -23,7 +24,6 @@ exports.postNewEvent = (req, res, next) => {
     // console.log(typeof(path))
     // path = path.replace(/\s/g, "%")
 
-    console.log(path);
     const newEvent = new Event({
         public: {
             name: name,
