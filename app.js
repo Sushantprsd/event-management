@@ -32,6 +32,9 @@ mongoose
             if (!error.statusCode) {
                 error.statusCode = 500;
             }
+            if (!error.message) {
+                error.message = "Internal Server Error";
+            }
             return res.status(error.statusCode).json({
                 message: error.message,
                 code: error.statusCode,
