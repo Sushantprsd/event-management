@@ -18,27 +18,3 @@ const fileFilter = (req, file, cb) => {
 };
 
 exports.uploadImage = multer({ storage: fileStorage, fileFilter: fileFilter }).single("image");
-
-// exports.profilePhotoUpload = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         bucket: profileBucket,
-//         acl: "public-read",
-//         key: function (req, file, cb) {
-//             cb(null, Date.now() + "-" + file.originalname);
-//         },
-//     }),
-//     fileFilter: profileFilter,
-// }).single("image");
-
-// exports.newVideoUpload = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         bucket: videoBucket,
-//         acl: "public-read",
-//         key: function (req, file, cb) {
-//             cb(null, Date.now() + "-" + file.originalname);
-//         },
-//     }),
-//     fileFilter: videosFilter,
-// }).single("videoFile");

@@ -10,6 +10,8 @@ exports.getFetchAllEvent = (req, res, next) => {
                 created_at: -1,
             },
         },
+
+        
         { $skip: (currentPage - 1) * perPage },
         { $limit: perPage },
      

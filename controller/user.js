@@ -4,7 +4,6 @@ const Event = require("../model/Events");
 const Enrolled = require("../model/Enrolled");
 
 exports.postNewEvent = (req, res, next) => {
-    console.log(req.file)
     const name = req.body.name;
     const time = req.body.time;
     const date = req.body.date;
@@ -18,11 +17,9 @@ exports.postNewEvent = (req, res, next) => {
         if (imageUrl) {
             fileHelper.deleteFile(imageUrl);
         }
-        next(err)
+        next(err);
     }
     let path = imageUrl.split("/").pop();
-    // console.log(typeof(path))
-    // path = path.replace(/\s/g, "%")
 
     const newEvent = new Event({
         public: {
@@ -35,7 +32,7 @@ exports.postNewEvent = (req, res, next) => {
                 landmark: "ground",
                 coordinates: {
                     type: "Point",
-                    coordinates: [0,0],
+                    coordinates: [0, 0],
                 },
             },
             description: description,
@@ -52,7 +49,7 @@ exports.postNewEvent = (req, res, next) => {
             });
         })
         .catch((err) => {
-            if(imageUrl){
+            if (imageUrl) {
                 fileHelper.deleteFile(imageUrl);
             }
             if (!err.statusCode) {
@@ -67,17 +64,14 @@ exports.getFetchAllUserEvent = (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 10;
     Event.aggregate([
-        { $skip: (currentPage - 1) * perPage },
-        { $limit: perPage },
         {
-            $project: {
-                _id: 1,
-                public: 1,
-            },
-            $project: {
-                "public.description": 0,
+            $sort: {
+                created_at: -1,
             },
         },
+        { $match: { userId: req.userId } },
+        { $skip: (currentPage - 1) * perPage },
+        { $limit: perPage },
     ])
         .then((result) => {
             res.json({
@@ -206,33 +200,69 @@ exports.postEnrollToEvent = (req, res, next) => {
         });
 };
 
-// exports.postUpdateEvent = (req, res, next) => {
-//     const eventId = req.params.eventId;
-//     if (!mongoose.Types.ObjectId.isValid(eventId)) {
-//         const error = new Error("Event Doesn't Exist");
-//         error.statusCode = 404;
-//         throw error;
-//     }
-//     Event.findById(eventId)
-//         .then((event) => {
-//             if (!event) {
-//                 const error = new Error("Event Doesn't Exist");
-//                 error.statusCode = 404;
-//                 throw error;
-//             }
-//             if (event.userId.toString() !== req.userId.toString()) {
-//                 const error = new Error("Not Found");
-//                 error.statusCode = 404;
-//                 throw error;
-//             }
+exports.isEnrolled = (req, res, next) => {
+    const eventId = req.params.eventId;
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+        const error = new Error("Event Doesn't Exist");
+        error.statusCode = 404;
+        throw error;
+    }
+    Enrolled.findOne({ eventId: eventId, userId: req.userId })
+        .then((data) => {
+            if (!data) {
+                res.status(200).json({
+                    message: "Not Enrolled",
+                    data: false,
+                });
+            } else {
+                res.status(200).json({
+                    message: "Enrolled",
+                    data: true,
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+                next(err);
+            }
+            next(err);
+        });
+};
 
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//             if (!err.statusCode) {
-//                 err.statusCode = 500;
-//                 next(err);
-//             }
-//             next(err);
-//         });
-// };
+exports.getEnrolledEvent = (req, res, next) => {
+    const currentPage = req.query.page || 1;
+    const perPage = 10;
+    Enrolled.aggregate([
+        {
+            $sort: {
+                created_at: -1,
+            },
+        },
+        { $match: { userId: req.userId } },
+        {
+            $lookup: {
+                from: "events",
+                localField: "eventId",
+                foreignField: "_id",
+                as: "event",
+            },
+        },
+        { $skip: (currentPage - 1) * perPage },
+        { $limit: perPage },
+    ])
+        .then((data) => {
+            res.json({
+                data,
+            });
+        })
+        .catch((err) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+                next(err);
+            }
+            next(err);
+        });
+};
+

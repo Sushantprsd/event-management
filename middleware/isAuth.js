@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
+const { ConnectionStates } = require("mongoose");
 
 module.exports = (req, res, next) => {
     const authorizationHeader = req.get("Authorization");
     if (!authorizationHeader) {
-        const error = new Error("Not Authorized");
+        const error = new Error("Not Authorized1");
         error.statusCode = 401;
         throw error;
     }
@@ -17,7 +18,8 @@ module.exports = (req, res, next) => {
         throw err;
     }
     if (!decodedToken) {
-        const error = new Error("Not Authorized");
+
+        const error = new Error("Not Authorized2");
         error.statusCode = 401;
         throw error;
     }
