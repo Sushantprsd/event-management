@@ -1,11 +1,20 @@
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { validationResult } = require("express-validator");
 
 exports.postSignup = (req, res, next) => {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    const validationErr = validationResult(req);
+
+    if (!validationErr.isEmpty()) {
+        const error = new Error(validationErr.array()[0].msg);
+        error.statusCode = 422;
+        throw error;
+    }
+
     User.findOne({ email: email })
         .then((user) => {
             if (user) {
@@ -19,9 +28,9 @@ exports.postSignup = (req, res, next) => {
             const newUser = new User({
                 email: email,
                 password: hashPassword,
-                public:{
-                    name:name
-                }
+                public: {
+                    name: name,
+                },
             });
             return newUser.save();
         })
@@ -34,7 +43,7 @@ exports.postSignup = (req, res, next) => {
             );
             res.status(201).json({
                 message: "User Created",
-                name:user.public.name,
+                name: user.public.name,
                 token: token,
             });
         })
@@ -51,7 +60,14 @@ exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     let loadedUser = null;
-    User.findOne({ email: email },{_id:1,password:1,"public.name":1})
+    const validationErr = validationResult(req);
+
+    if (!validationErr.isEmpty()) {
+        const error = new Error(validationErr.array()[0].msg);
+        error.statusCode = 422;
+        throw error;
+    }
+    User.findOne({ email: email }, { _id: 1, password: 1, "public.name": 1 })
         .then((user) => {
             if (!user) {
                 const error = new Error("User Doesn't Exist");
@@ -76,7 +92,7 @@ exports.postLogin = (req, res, next) => {
             res.status(200).json({
                 message: "User Found",
                 token: token,
-                name:loadedUser.public.name
+                name: loadedUser.public.name,
             });
         })
         .catch((err) => {
