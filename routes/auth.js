@@ -6,9 +6,9 @@ const { check, body } = require("express-validator");
 router.post(
     "/signup",
     [
-        body("email").isEmail().trim().normalizeEmail().withMessage("Please enter a valid email address."),
-        body("password", "Password has to be valid.")
-            .trim() //remove excess white spacce
+        body("email").trim().isEmail().normalizeEmail().withMessage("Please enter a valid email address."),
+        body("password", "Password should have length greater than 4.")
+            .trim() 
             .isLength({ min: 5 }),
     ],
 
@@ -18,8 +18,8 @@ router.post(
     "/login",
     [
         body("email").trim().isEmail().normalizeEmail().withMessage("Please enter a valid email address."),
-        body("password", "Password has to be valid.")
-            .trim() //remove excess white spacce
+        body("password", "password", "Password should have length greater than 4.")
+            .trim()
             .isLength({ min: 5 }),
     ],
     authController.postLogin,

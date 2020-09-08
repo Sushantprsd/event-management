@@ -8,7 +8,6 @@ exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const validationErr = validationResult(req);
-
     if (!validationErr.isEmpty()) {
         const error = new Error(validationErr.array()[0].msg);
         error.statusCode = 422;
